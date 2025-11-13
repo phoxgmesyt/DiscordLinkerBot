@@ -1,4 +1,4 @@
-name: Deploy to Replit
+name: Deploy to Replit (ping)
 
 on:
   push:
@@ -14,13 +14,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Deploy to Replit
-        uses: phoxgmesyt/replit-action@v1
-        with:
-          replit_url: ${{ secrets.REPLIT_URL }}
-          replit_key: ${{ secrets.REPLIT_KEY }}
-
-      - name: Notify deployment
+      - name: Check for REPLIT_URL secret
         run: |
-          echo "✅ Bot deployed to Replit successfully"
-          echo "🚀 Visit: ${{ secrets.REPLIT_URL }}"
+          if [ -z "${{ secrets.REPLIT_URL }}" ]; then
+            echo "❌ REPLIT_URL secret is not set. Please add it in repository settings -> Secrets -> Actions.";
+            exit 1;
+          fi
+
+      - name: Ping the Replit URL to wake the repl
+        run: |
+          echo "Pinging Replit URL: ${{ secrets.REPLIT_URL }}"
+          # Simple GET to wake the repl (may not trigger build, but keeps it active)
+          curl -sS -I --max-time 10 "${{ secrets.REPLIT_URL }}" || echo "Warning: could not reach Replit URL"
+
+      - name: Success message
+        run: |
+          echo "✅ Replit ping attempted. If your Replit is linked to this GitHub repo, it should detect the new push and redeploy automatically."
