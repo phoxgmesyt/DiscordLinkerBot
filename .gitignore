@@ -1,2 +1,30 @@
+# Dependencias
+node_modules/
+npm-debug.log
+
+# Configuración sensible
+.env
+config.json
+.env.local
+
+# Logs
+logs/
+*.log
+
+# Sistema
+.DS_Store
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Caché
+__pycache__/
+.pytest_cache/
+.eslintcache
+
+# Documentación original
 .documentation
-.node_modules
