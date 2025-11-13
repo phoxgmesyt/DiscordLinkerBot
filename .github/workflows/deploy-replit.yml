@@ -1,0 +1,26 @@
+name: Deploy to Replit
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Replit
+        uses: phoxgmesyt/replit-action@v1
+        with:
+          replit_url: ${{ secrets.REPLIT_URL }}
+          replit_key: ${{ secrets.REPLIT_KEY }}
+
+      - name: Notify deployment
+        run: |
+          echo "✅ Bot deployed to Replit successfully"
+          echo "🚀 Visit: ${{ secrets.REPLIT_URL }}"

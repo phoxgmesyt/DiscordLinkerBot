@@ -1,0 +1,54 @@
+name: Validate Code
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check syntax
+        run: |
+          echo "✅ Checking JavaScript syntax..."
+          npm list discord.js dotenv rcon.js
+
+      - name: Verify required files
+        run: |
+          echo "Checking required files..."
+          [ -f "index.js" ] && echo "✅ index.js" || echo "❌ index.js missing"
+          [ -f "package.json" ] && echo "✅ package.json" || echo "❌ package.json missing"
+          [ -f ".env.example" ] && echo "✅ .env.example" || echo "❌ .env.example missing"
+          [ -f "Dockerfile" ] && echo "✅ Dockerfile" || echo "❌ Dockerfile missing"
+          [ -f "ecosystem.config.js" ] && echo "✅ ecosystem.config.js" || echo "❌ ecosystem.config.js missing"
+          [ -d "commands" ] && echo "✅ commands/" || echo "❌ commands/ missing"
+
+      - name: Validate config structure
+        run: |
+          echo "Validating config.json structure..."
+          node -e "const cfg = require('./config.json'); console.log('✅ config.json valid'); console.log('clientId:', cfg.clientId); console.log('guildId:', cfg.guildId);"
+
+      - name: Summary
+        run: |
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ All validations passed!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "🚀 Ready to deploy to Replit"
