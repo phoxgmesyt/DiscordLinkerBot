@@ -41,8 +41,8 @@ jobs:
 
       - name: Validate config structure
         run: |
-          echo "Validating config.json structure..."
-          node -e "const cfg = require('./config.json'); console.log('✅ config.json valid'); console.log('clientId:', cfg.clientId); console.log('guildId:', cfg.guildId);"
+          echo "Validating config structure..."
+          node -e "let cfg; try { cfg = require('./config.json'); console.log('Using config.json'); } catch(e) { try { cfg = require('./config_example.json'); console.log('config.json missing, using config_example.json'); } catch(e2) { console.log('No config.json or config_example.json found. Relying on environment variables.'); cfg = {}; } } const clientId = cfg.clientId || process.env.CLIENT_ID || process.env.CLIENTID || process.env.CLIENT_ID; const guildId = cfg.guildId || process.env.GUILD_ID || process.env.GUILDID || process.env.GUILD_ID; console.log('clientId:', clientId || 'none'); console.log('guildId:', guildId || 'none'); if(!clientId) { console.error('❌ clientId not set in config.json or environment (CLIENT_ID)'); process.exit(1); } if(!guildId) { console.error('❌ guildId not set in config.json or environment (GUILD_ID)'); process.exit(1); } console.log('✅ config validated');"
 
       - name: Summary
         run: |
